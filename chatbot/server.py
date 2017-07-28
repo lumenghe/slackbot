@@ -12,3 +12,13 @@ host = None
 port = None
 chatbot = None
 
+
+@app.route('/askmeanything', methods=['GET'])
+def chatquery():
+    question = request.args.get('q')
+    answer = chatbot.get_response(question).text
+    return jsonify({'response': answer})
+
+@app.route('/getbotname', methods=['GET'])
+def getbotname():
+    return jsonify({'botname': name})
