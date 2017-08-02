@@ -22,8 +22,3 @@ def chatquery():
 @app.route('/getbotname', methods=['GET'])
 def getbotname():
     return jsonify({'botname': name})
-
-@app.route("/")
-def home():
-    return "{} chatbot is running here :-)".format(name)
-
