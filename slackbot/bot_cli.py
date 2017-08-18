@@ -22,3 +22,8 @@ def ask_from_cli():
     text = request.args.get('q')
     reply, current_bot, active_bots = parse_message(text, current_bot, active_bots, chatservice_host)
     return jsonify({'response': reply})
+
+@app.route("/")
+def home():
+    return "CLI Slackbot is running here :-)"
+
