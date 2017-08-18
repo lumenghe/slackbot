@@ -16,3 +16,12 @@ chatservice_host = None
 active_bots = dict()
 current_bot = None
 
+
+def reply_to_text(text, channel):
+    """
+    Receive @tellme message and update environment
+    """
+    global current_bot
+    global active_bots
+    reply, current_bot, active_bots = parse_message(text, current_bot, active_bots, chatservice_host)
+    slack_client.api_call("chat.postMessage", channel=channel, text=reply, as_user=True)
