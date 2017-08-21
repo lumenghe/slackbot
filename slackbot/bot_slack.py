@@ -25,3 +25,15 @@ def reply_to_text(text, channel):
     global active_bots
     reply, current_bot, active_bots = parse_message(text, current_bot, active_bots, chatservice_host)
     slack_client.api_call("chat.postMessage", channel=channel, text=reply, as_user=True)
+
+def parse_slack_output(slack_rtm_output):
+    """
+    Return None unless the message startswith @tellme
+    """
+    output_list = slack_rtm_output
+    if output_list and len(output_list) > 0:
+        for output in output_list:
+            if output and 'text' in output and output['text'].startswith("@tellme"):
+                return output['text'], output['channel']
+    return None, None
+
