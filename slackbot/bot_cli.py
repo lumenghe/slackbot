@@ -27,3 +27,14 @@ def ask_from_cli():
 def home():
     return "CLI Slackbot is running here :-)"
 
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='CLI interface to communicate with slackbot')
+    parser.add_argument('--chatservice_host', help='host for chatbot service(s)', type=str, default="0.0.0.0")
+    parser.add_argument('--slackbot_host', help='host for slackbot', type=str, default="0.0.0.0")
+    parser.add_argument('-p','--port', help='port for slackbot', type=int, required=True)
+    args = parser.parse_args()
+    chatservice_host = args.chatservice_host
+    slackbot_host = args.slackbot_host
+    port = args.port
+    app.run(debug=True, host=slackbot_host, port=port)
