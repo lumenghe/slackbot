@@ -37,3 +37,21 @@ def parse_slack_output(slack_rtm_output):
                 return output['text'], output['channel']
     return None, None
 
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='CLI interface to communicate with slackbot')
+    parser.add_argument('--chatservice_host', help='host for chatbot service(s)', type=str, default="0.0.0.0")
+    args = parser.parse_args()
+    chatservice_host = args.chatservice_host
+    if slack_client.rtm_connect():
+        print("Slackbot is connected")
+        try:
+            while True:
+                text, channel = parse_slack_output(slack_client.rtm_read())
+                if text and channel:
+                    reply_to_text(text, channel)
+                time.sleep(READ_WEBSOCKET_DELAY)
+        except (KeyboardInterrupt, EOFError, SystemExit):
+            print("Slackbot terminated.")
+    else:
+        print("Connection failed. Please check connection or Slack token...")
