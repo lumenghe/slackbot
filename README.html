@@ -1,0 +1,66 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Untitled Document.md</title><style></style></head><body id="preview">
+<h1><a id="Slackbot_task_0"></a>Slackbot task</h1>
+<p>I designed a chatbot architecture to run bot services independently and interacting with them through a Command Line Interface (CLI) or Slack. The code is compatible with both Python 2 and 3.</p>
+<p>Note: debugger is activated for flask to help evaluation.</p>
+<h2><a id="Features_7"></a>Features</h2>
+<ul>
+<li>Run multiple chatbot services on a host</li>
+<li>A single client for interface with user</li>
+<li>The client adapts dynamically to the number of running bot services</li>
+<li>The client is robust to bot service failures</li>
+</ul>
+<h2><a id="Architecture_15"></a>Architecture</h2>
+<p>The code has three main modules:</p>
+<ul>
+<li><code>chatbot</code> for running chatbot services</li>
+<li><code>slackbot</code> for running the client service, which communicate on CLI or Slack</li>
+<li><code>cli</code> for running the CLI</li>
+</ul>
+<h2><a id="Python_requirements_23"></a>Python requirements</h2>
+<p>The following Python modules are used in my code</p>
+<ul>
+<li>argparse</li>
+<li>chatterbot</li>
+<li>flask</li>
+<li>requests</li>
+<li>six</li>
+<li>slackclient</li>
+<li>socket (already in the standard library)</li>
+</ul>
+<h2><a id="Usage_manually_37"></a>Usage (manually)</h2>
+<p>I give the commands for testing locally each part of the code. Provided the requirements are installed, the first thing is to start chatbot services, for example:</p>
+<pre><code>python chatbot/server.py --name &quot;Wall-E&quot; --host 0.0.0.0 --port 5002 --bot English --workdir /tmp/
+python chatbot/server.py --name &quot;HAL 9000&quot; --host 0.0.0.0 --port 5003 --bot Math --workdir /tmp/
+</code></pre>
+<p>Name, host IP and port, and bot type (English, Zen or Math) are required. More services can be started on different ports.</p>
+<p>The second step is to run the slackbot service, which will scan the ports to find running bots. This version interacts with CLI:</p>
+<pre><code>python slackbot/bot_cli.py --chatservice_host 0.0.0.0 --slackbot_host 0.0.0.0 --port 5001
+</code></pre>
+<p>It searches for bot services on a single host (here: <em>localhost</em>), and runs as a web service on provided host and port.</p>
+<p>The other option is to run a Slack service, which requires to <a href="https://www.fullstackpython.com/blog/build-first-slack-bot-python.html">set up a Slackbot account</a>. The Slack token is passed to Python using the environment variable <code>SLACK_BOT_TOKEN</code>.</p>
+<pre><code>export SLACK_BOT_TOKEN=************************ (change to your slack bot token)
+python slackbot/bot_slack.py --chatservice_host 0.0.0.0
+</code></pre>
+<p>In addition, if we run the CLI service, we can send commands using:</p>
+<pre><code>python cli/client.py --host 0.0.0.0 --port 5001
+</code></pre>
+<p>After all the services are started, we can type <em>@tellme</em> commands in CLI or Slack to interact with the bots:</p>
+<ul>
+<li><em>@tellme list</em>: for listing available bots</li>
+<li><em>@tellme start_session name_of_the_bot</em>: to begin chatting with a bot</li>
+<li><em>@tellme end_session</em>: to terminate a chat with a bot</li>
+</ul>
+<h2><a id="Usage_with_Docker_74"></a>Usage (with Docker)</h2>
+<p>We create docker images to run the different services presented above. The three modules have requirements and Dockerfile for building containers. We can use Docker-compose to build and run the complete service suite:</p>
+<pre><code>docker-compose up --build
+</code></pre>
+<p>Then it is possible to send messages from Slack or the CLI. Bots are configured to create their databases at /tmp/.</p>
+<h2><a id="Possible_improvements_85"></a>Possible improvements</h2>
+<p>I can think of some improvements for this code, which could be done with a longer timeline:</p>
+<ol>
+<li>For the moment the code doesn’t have automated tests, everything was checked manually.</li>
+<li>Port scanning for searching bot services can be slow, it could be multithreaded.</li>
+<li>Dynamic discovery of bot services could be extended to many host. That would be done differently: bots would register to a central service which would ping them regularly to update the list.</li>
+</ol>
+
+</body></html>
