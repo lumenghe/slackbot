@@ -11,6 +11,7 @@ services:
      - "5002:5002"
     expose:
      - "5002"
+     
   chatbot_hal9000:
     build: chatbot
     image: chatbot
@@ -22,6 +23,7 @@ services:
      - "5003:5003"
     expose:
      - "5003"
+     
   slackbot_cli:
     build: slackbot
     image: slackbot
@@ -33,6 +35,7 @@ services:
     network_mode: host
     environment:
      - SLACK_BOT_TOKEN=UNDEFINED
+     
   slackbot_slack:
     build: slackbot
     image: slackbot
